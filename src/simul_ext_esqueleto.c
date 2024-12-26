@@ -63,6 +63,24 @@ int main(){
       if (strcmp(orden, "dir") == 0){
          Directorio(&directorio, &ext_blq_inodos);
          continue;
+      } else if (strcmp(orden,"rename") == 0) {
+         Renombrar(&directorio, &ext_blq_inodos, argumento1, argumento2);
+         continue;
+      } else if (strcmp(orden,"remove") == 0) {
+         Borrar(&directorio, &ext_blq_inodos, &ext_bytemaps, &ext_superblock, argumento1, fent);
+         continue;
+      } else if (strcmp(orden,"imprimir") == 0) {
+         Imprimir(&directorio, &ext_blq_inodos, &memdatos, argumento1);
+         continue;
+      } else if (strcmp(orden,"copiar") == 0) {
+         Copiar(&directorio, &ext_blq_inodos, &ext_bytemaps, &ext_superblock, &memdatos, argumento1, argumento2, fent);
+         continue;
+      } else if (strcmp(orden,"salir") == 0) {
+         GrabarDatos(&memdatos, fent);
+         fclose(fent);
+         return 0;
+      } else {
+         printf("Comando desconocido\n");
       }
       //... AÑADIR LOGICA CORRESPONDIENTE
       // Escritura de metadatos en comandos rename, remove, copy
