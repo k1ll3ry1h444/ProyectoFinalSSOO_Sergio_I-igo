@@ -1,5 +1,8 @@
 //Iñigo
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "cabeceras.h"
 
 void printBytemaps(EXT_BYTE_MAPS *ext_bytemaps) {
     if (ext_bytemaps == NULL) {
@@ -8,17 +11,18 @@ void printBytemaps(EXT_BYTE_MAPS *ext_bytemaps) {
     }
 
     // Imprimir el estado de los bloques
-    printf("Estado de los bloques (primeros %d bloques):\n", MAX_BLOCKS);
-    for (int i = 0; i < MAX_BLOCKS; i++) {
-        printf("Bloque %d: %s\n", i, ext_bytemaps->block_map[i] ? "Ocupado" : "Libre");
+    printf("Estado de los bloques (primeros %d bloques):\n", MAX_BLOQUES_PARTICION);
+    for (int i = 0; i < MAX_BLOQUES_PARTICION; i++) {
+        printf("Bloque %d: %s\n", i, ext_bytemaps->bmap_bloques[i] ? "Ocupado" : "Libre");
     }
 
     // Imprimir el estado de los inodos
     printf("\nEstado de los inodos:\n");
-    for (int i = 0; i < 256; i++) { // Supongamos que hay 256 inodos
-        printf("Inodo %d: %s\n", i, ext_bytemaps->inode_map[i] ? "Ocupado" : "Libre");
+    for (int i = 0; i < MAX_INODOS; i++) {
+        printf("Inodo %d: %s\n", i, ext_bytemaps->bmap_inodos[i] ? "Ocupado" : "Libre");
     }
 }
+
 
 
 
