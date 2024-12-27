@@ -5,19 +5,19 @@
 
 #define LONGITUD_COMANDO 100
 
-void Printbytemaps(EXT_BYTE_MAPS *ext_bytemaps);
-int ComprobarComando(char *strcomando, char *orden, char *argumento1, char *argumento2);
-void LeeSuperBloque(EXT_SIMPLE_SUPERBLOCK *psup);
-int BuscaFich(EXT_ENTRADA_DIR *directorio, EXT_BLQ_INODOS *inodos, char *nombre);
+void printBytemaps(EXT_BYTE_MAPS *ext_bytemaps);
+int comprobarComando(char *strcomando, char *orden, char *argumento1, char *argumento2);
+void leeSuperBloque(EXT_SIMPLE_SUPERBLOCK *psup);
+int buscaFich(EXT_ENTRADA_DIR *directorio, EXT_BLQ_INODOS *inodos, char *nombre);
 void Directorio(EXT_ENTRADA_DIR *directorio, EXT_BLQ_INODOS *inodos);
-int Renombrar(EXT_ENTRADA_DIR *directorio, EXT_BLQ_INODOS *inodos, char *nombreantiguo, char *nombrenuevo);
-int Imprimir(EXT_ENTRADA_DIR *directorio, EXT_BLQ_INODOS *inodos, EXT_DATOS *memdatos, char *nombre);
-int Borrar(EXT_ENTRADA_DIR *directorio, EXT_BLQ_INODOS *inodos, EXT_BYTE_MAPS *ext_bytemaps, EXT_SIMPLE_SUPERBLOCK *ext_superblock, char *nombre, FILE *fich);
-int Copiar(EXT_ENTRADA_DIR *directorio, EXT_BLQ_INODOS *inodos, EXT_BYTE_MAPS *ext_bytemaps, EXT_SIMPLE_SUPERBLOCK *ext_superblock, EXT_DATOS *memdatos, char *nombreorigen, char *nombredestino, FILE *fich);
-void Grabarinodosydirectorio(EXT_ENTRADA_DIR *directorio, EXT_BLQ_INODOS *inodos, FILE *fich);
-void GrabarByteMaps(EXT_BYTE_MAPS *ext_bytemaps, FILE *fich);
-void GrabarSuperBloque(EXT_SIMPLE_SUPERBLOCK *ext_superblock, FILE *fich);
-void GrabarDatos(EXT_DATOS *memdatos, FILE *fich);
+int renombrar(EXT_ENTRADA_DIR *directorio, EXT_BLQ_INODOS *inodos, char *nombreantiguo, char *nombrenuevo);
+int imprimir(EXT_ENTRADA_DIR *directorio, EXT_BLQ_INODOS *inodos, EXT_DATOS *memdatos, char *nombre);
+int borrar(EXT_ENTRADA_DIR *directorio, EXT_BLQ_INODOS *inodos, EXT_BYTE_MAPS *ext_bytemaps, EXT_SIMPLE_SUPERBLOCK *ext_superblock, char *nombre, FILE *fich);
+int copiar(EXT_ENTRADA_DIR *directorio, EXT_BLQ_INODOS *inodos, EXT_BYTE_MAPS *ext_bytemaps, EXT_SIMPLE_SUPERBLOCK *ext_superblock, EXT_DATOS *memdatos, char *nombreorigen, char *nombredestino, FILE *fich);
+void grabarInodosyDirectorio(EXT_ENTRADA_DIR *directorio, EXT_BLQ_INODOS *inodos, FILE *fich);
+void grabarByteMaps(EXT_BYTE_MAPS *ext_bytemaps, FILE *fich);
+void grabarSuperBloque(EXT_SIMPLE_SUPERBLOCK *ext_superblock, FILE *fich);
+void grabarDatos(EXT_DATOS *memdatos, FILE *fich);
 
 int main(){
    char *comando[LONGITUD_COMANDO];
@@ -59,43 +59,45 @@ int main(){
          printf(">> ");
          fflush(stdin);
          fgets(comando, LONGITUD_COMANDO, stdin);
-      } while (ComprobarComando(comando, orden, argumento1, argumento2) != 0);
+      } while (comprobarComando(comando, orden, argumento1, argumento2) != 0);
       if (strcmp(orden, "dir") == 0){
          Directorio(&directorio, &ext_blq_inodos);
          continue;
       } else if (strcmp(orden,"rename") == 0) {
-         Renombrar(&directorio, &ext_blq_inodos, argumento1, argumento2);
+         renombrar(&directorio, &ext_blq_inodos, argumento1, argumento2);
          continue;
       } else if (strcmp(orden,"remove") == 0) {
-         Borrar(&directorio, &ext_blq_inodos, &ext_bytemaps, &ext_superblock, argumento1, fent);
+         borrar(&directorio, &ext_blq_inodos, &ext_bytemaps, &ext_superblock, argumento1, fent);
          continue;
       } else if (strcmp(orden,"imprimir") == 0) {
-         Imprimir(&directorio, &ext_blq_inodos, &memdatos, argumento1);
+         imprimir(&directorio, &ext_blq_inodos, &memdatos, argumento1);
          continue;
       } else if (strcmp(orden,"copiar") == 0) {
-         Copiar(&directorio, &ext_blq_inodos, &ext_bytemaps, &ext_superblock, &memdatos, argumento1, argumento2, fent);
+         copiar(&directorio, &ext_blq_inodos, &ext_bytemaps, &ext_superblock, &memdatos, argumento1, argumento2, fent);
          continue;
       } else if (strcmp(orden,"salir") == 0) {
-         GrabarDatos(&memdatos, fent);
+         grabarDatos(&memdatos, fent);
          fclose(fent);
          return 0;
       } else {
-         printf("Comando desconocido\n");
+         printf("ERROR: Comando ilegal [bytemaps, copy, dir, info, imprimir, rename, remove, salir]\n");
       }
-      //... AÑADIR LOGICA CORRESPONDIENTE
       // Escritura de metadatos en comandos rename, remove, copy
-      Grabarinodosydirectorio(&directorio, &ext_blq_inodos, fent);
-      GrabarByteMaps(&ext_bytemaps, fent);
-      GrabarSuperBloque(&ext_superblock, fent);
+      grabarInodosyDirectorio(&directorio, &ext_blq_inodos, fent);
+      grabarByteMaps(&ext_bytemaps, fent);
+      grabarSuperBloque(&ext_superblock, fent);
       if (grabardatos)
-         GrabarDatos(&memdatos, fent);
+         grabarDatos(&memdatos, fent);
       grabardatos = 0;
       // Si el comando es salir se habrán escrito todos los metadatos
       // faltan los datos y cerrar
       if (strcmp(orden, "salir") == 0){
-         GrabarDatos(&memdatos, fent);
+         grabarDatos(&memdatos, fent);
          fclose(fent);
          return 0;
       }
    }
 }
+
+//void grabarInodosyDirectorio(EXT_ENTRADA_DIR *directorio, EXT_BLQ_INODOS *inodos, FILE *fich);
+//void grabarDatos(EXT_DATOS *memdatos, FILE *fich);

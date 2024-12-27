@@ -34,3 +34,5 @@ void print_bytemaps(EXT_BYTE_MAPS *ext_bytemaps){
     }
     printf("\n");
 }
+
+//int comprobarComando(char *strcomando, char *orden, char *argumento1, char *argumento2);
