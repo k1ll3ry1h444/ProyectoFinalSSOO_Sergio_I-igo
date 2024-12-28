@@ -1,5 +1,5 @@
 #ProyectoEXT
-/* Este proyecto implemente un sistema simple para interactuar con un sitema de archivos EXT.
+/* Este proyecto implementa un sistema simple de gestión de archivos.
 Integrantes: 
-Sergio Yihen Lin
+Sergio Yiheng Lin
 Iñigo Catalina */
