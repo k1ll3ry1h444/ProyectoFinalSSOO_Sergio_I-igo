@@ -14,7 +14,4 @@ void grabarSuperBloque(EXT_SIMPLE_SUPERBLOCK *ext_superblock, FILE *fich);
 // Función que lee un superbloque desde un archivo binario
 void leeSuperBloque(EXT_SIMPLE_SUPERBLOCK *psup, FILE *fich);
 
-// Función que muestra información del superbloque
-void mostrar_info_superbloque(EXT_SIMPLE_SUPERBLOCK *superbloque);
-
 #endif /* FUNCIONES_SUPERBLOQUE_H */

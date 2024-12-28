@@ -4,19 +4,14 @@
 #include <string.h>
 #include "../cabeceras.h"
 
-void print_bytemaps(EXT_BYTE_MAPS *ext_bytemaps){
-    printf("Bytemap de Inodos: ");
-    for(int i = 0; i < MAX_INODOS; i++){
-        printf("%d", ext_bytemaps -> bmap_inodos[i]);
-    }
-    printf("\nBytemap de Bloques: ");
-    for(int i = 0; i < MAX_BLOQUES_PARTICION; i++){
-        printf("%d", ext_bytemaps -> bmap_bloques[i]);
-    }
-    printf("\n");
+void printBytemaps(EXT_BYTE_MAPS *ext_bytemaps){
+   printf("Bytemap de Inodos: ");
+   for(int i = 0; i < MAX_INODOS; i++){
+       printf("%d", ext_bytemaps -> bmap_inodos[i]);
+   }
+   printf("\nBytemap de Bloques: ");
+   for(int i = 0; i < MAX_BLOQUES_PARTICION; i++){
+       printf("%d", ext_bytemaps -> bmap_bloques[i]);
+   }
+   printf("\n");
 }
-
-
-
-
-

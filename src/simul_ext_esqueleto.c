@@ -12,6 +12,7 @@
 #include "rename.h"
 #include "dir.h"
 #include "copy.h"
+#include "info.h"
 
 #define LONGITUD_COMANDO 100
 
@@ -32,6 +33,7 @@ void grabarDatos(EXT_DATOS *memdatos, FILE *fich);
 
 // Función que comprueba el comando
 int comprobarComando(char *strcomando, char *orden, char *argumento1, char *argumento2) {
+    printf("Comprobando comando...\n");
     int count = sscanf(strcomando, "%s %s %s", orden, argumento1, argumento2);
     
     if (count == 1) { // Solo el comando, sin argumentos
@@ -79,49 +81,153 @@ int main() {
 
     // Bucle de tratamiento de comandos
     for (;;) {
-        // Solicitando al usuario que ingrese un comando
-        do {
-            printf(">> ");
-            while (getchar() != '\n');  // Limpiar el buffer de entrada
-            fgets(comando, LONGITUD_COMANDO, stdin);
-        } while (comprobarComando(comando, orden, argumento1, argumento2) != 0);
-        
-        // Manejo de los diferentes comandos
-        if (strcmp(orden, "dir") == 0) {
-            Directorio(&directorio[0], &ext_blq_inodos);
-        } 
-        else if (strcmp(orden, "rename") == 0) {
-            renombrar(&directorio[0], &ext_blq_inodos, argumento1, argumento2);
-        } 
-        else if (strcmp(orden, "remove") == 0) {
-            borrar(&directorio[0], &ext_blq_inodos, &ext_bytemaps, &ext_superblock, argumento1, fent);
-        } 
-        else if (strcmp(orden, "imprimir") == 0) {
-            imprimir(&directorio[0], &ext_blq_inodos, &memdatos[0], argumento1);
-        } 
-        else if (strcmp(orden, "copiar") == 0) {
-            copiar(&directorio[0], &ext_blq_inodos, &ext_bytemaps, &ext_superblock, &memdatos[0], argumento1, argumento2, fent);
-        } 
-        else if (strcmp(orden, "salir") == 0) {
-            grabarDatos(&memdatos[0], fent);
-            fclose(fent);
-            return 0;
-        } 
+        // Solicitar comando del usuario
+        printf("Introduce un comando: [bytemaps, copy, dir, info, imprimir, rename, remove, salir]\n");
+        printf(">> ");
+        fgets(comando, LONGITUD_COMANDO, stdin);
+
+        // Eliminar el salto de línea si está presente
+        size_t len = strlen(comando);
+        if (len > 0 && comando[len - 1] == '\n') {
+            comando[len - 1] = '\0';
+        }
+
+        // Comprobar el comando y sus argumentos
+        if (comprobarComando(comando, orden, argumento1, argumento2) == 0) {
+            printf("Comando: %s.\n", orden);
+            
+            // Manejo de los comandos
+            if (strcmp(orden, "dir") == 0) {
+                Directorio(&directorio[0], &ext_blq_inodos);
+            } else if (strcmp(orden, "bytemaps") == 0) {
+                printBytemaps(&ext_bytemaps);
+            } else if (strcmp(orden, "copy") == 0) {
+                // Mostrar los archivos disponibles
+                printf("Lista de archivos disponibles para copiar:\n");
+                for (int i = 0; i < MAX_FICHEROS; i++) {
+                    if (directorio[i].dir_inodo != NULL_INODO) {
+                        printf("%d. %s\n", i + 1, directorio[i].dir_nfich);  // Mostrar nombre del archivo
+                    }
+                }
+
+                // Elegir archivo origen
+                printf("Introduce el número del archivo de origen: ");
+                int origen;
+                scanf("%d", &origen);
+
+                if (origen < 1 || origen > MAX_FICHEROS || directorio[origen - 1].dir_inodo == NULL_INODO) {
+                    printf("Archivo de origen no válido.\n");
+                    return 1;
+                }
+
+                // Elegir archivo destino
+                printf("Introduce el número del archivo de destino: ");
+                int destino;
+                scanf("%d", &destino);
+
+                if (destino < 1 || destino > MAX_FICHEROS || directorio[destino - 1].dir_inodo != NULL_INODO) {
+                    printf("Archivo de destino no válido.\n");
+                    return 1;
+                }
+
+                // Copiar archivo
+                strcpy(argumento1, directorio[origen - 1].dir_nfich);
+                strcpy(argumento2, directorio[destino - 1].dir_nfich);
+                copiar(&directorio[0], &ext_blq_inodos, &ext_bytemaps, &ext_superblock, &memdatos[0], argumento1, argumento2, fent);
+
+            } else if (strcmp(orden, "info") == 0) {
+                info(&ext_superblock);
+            } else if (strcmp(orden, "rename") == 0) {
+                // Mostrar los archivos disponibles
+                printf("Lista de archivos disponibles para renombrar:\n");
+                for (int i = 0; i < MAX_FICHEROS; i++) {
+                    if (directorio[i].dir_inodo != NULL_INODO) {
+                        printf("%d. %s\n", i + 1, directorio[i].dir_nfich);  // Mostrar nombre del archivo
+                    }
+                }
+
+                // Elegir archivo a renombrar
+                printf("Introduce el número del archivo a renombrar: ");
+                int archivo_renombrar;
+                scanf("%d", &archivo_renombrar);
+
+                if (archivo_renombrar < 1 || archivo_renombrar > MAX_FICHEROS || directorio[archivo_renombrar - 1].dir_inodo == NULL_INODO) {
+                    printf("Archivo no válido.\n");
+                    return 1;
+                }
+
+                // Introducir nuevo nombre
+                printf("Introduce el nuevo nombre del archivo: ");
+                scanf("%s", argumento2);
+
+                // Renombrar archivo
+                strcpy(argumento1, directorio[archivo_renombrar - 1].dir_nfich);
+                renombrar(&directorio[0], &ext_blq_inodos, argumento1, argumento2);
+
+            } else if (strcmp(orden, "remove") == 0) {
+                // Mostrar los archivos disponibles
+                printf("Lista de archivos disponibles para eliminar:\n");
+                for (int i = 0; i < MAX_FICHEROS; i++) {
+                    if (directorio[i].dir_inodo != NULL_INODO) {
+                        printf("%d. %s\n", i + 1, directorio[i].dir_nfich);  // Mostrar nombre del archivo
+                    }
+                }
+
+                // Elegir archivo a eliminar
+                printf("Introduce el número del archivo a eliminar: ");
+                int archivo_eliminar;
+                scanf("%d", &archivo_eliminar);
+
+                if (archivo_eliminar < 1 || archivo_eliminar > MAX_FICHEROS || directorio[archivo_eliminar - 1].dir_inodo == NULL_INODO) {
+                    printf("Archivo no válido.\n");
+                    return 1;
+                }
+
+                // Eliminar archivo
+                strcpy(argumento1, directorio[archivo_eliminar - 1].dir_nfich);
+                borrar(&directorio[0], &ext_blq_inodos, &ext_bytemaps, &ext_superblock, argumento1, fent);
+            } else if (strcmp(orden, "imprimir") == 0) {
+                // Mostrar los archivos disponibles
+                printf("Lista de archivos disponibles para imprimir:\n");
+                for (int i = 0; i < MAX_FICHEROS; i++) {
+                    if (directorio[i].dir_inodo != NULL_INODO) {
+                        printf("%d. %s\n", i + 1, directorio[i].dir_nfich);  // Mostrar nombre del archivo
+                    }
+                }
+
+                // Elegir archivo a imprimir
+                printf("Introduce el número del archivo a imprimir: ");
+                int archivo_imprimir;
+                scanf("%d", &archivo_imprimir);
+
+                if (archivo_imprimir < 1 || archivo_imprimir > MAX_FICHEROS || directorio[archivo_imprimir - 1].dir_inodo == NULL_INODO) {
+                    printf("Archivo no válido.\n");
+                    return 1;
+                }
+
+                // Imprimir archivo
+                strcpy(argumento1, directorio[archivo_imprimir - 1].dir_nfich);
+                imprimir(&directorio[0], &ext_blq_inodos, &memdatos[0], argumento1);
+            } else if (strcmp(orden, "salir") == 0) {
+                printf("Saliendo...\n");
+                grabarDatos(&memdatos[0], fent);
+                fclose(fent);
+                return 0;  // Salir del programa
+            } else {
+                printf("ERROR: Comando ilegal [bytemaps, copy, dir, info, imprimir, rename, remove, salir]\n");
+            }
+
+
+            // Si el comando ejecutado requiere grabar datos
+            if (grabardatos) {
+                grabarDatos(&memdatos[0], fent);
+            }
+            grabardatos = 0;
+        }
         else {
+            // Si el comando no es válido
             printf("ERROR: Comando ilegal [bytemaps, copy, dir, info, imprimir, rename, remove, salir]\n");
         }
-        
-        if (grabardatos) {
-            grabarDatos(&memdatos[0], fent);
-        }
-        grabardatos = 0;
-
-        // Si el comando es salir, se habrán escrito todos los metadatos
-        // faltan los datos y cerrar
-        if (strcmp(orden, "salir") == 0) {
-            grabarDatos(&memdatos[0], fent);
-            fclose(fent);
-            return 0;
-        }
     }
-}
+
+    }

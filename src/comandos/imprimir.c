@@ -1,10 +1,8 @@
 //Sergio
-
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
 #include "../cabeceras.h"
-
 
 int imprimir(EXT_ENTRADA_DIR *directorio, EXT_BLQ_INODOS *inodos, EXT_DATOS *memdatos, char *nombre){
     //Busca inodo del archivo

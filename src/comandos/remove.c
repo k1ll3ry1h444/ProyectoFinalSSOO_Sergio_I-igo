@@ -1,5 +1,4 @@
 //Sergio
-
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
@@ -34,21 +33,11 @@ int borrar(EXT_ENTRADA_DIR *directorio, EXT_BLQ_INODOS *inodos, EXT_BYTE_MAPS *e
 
     //Elimina la entrada del directorio
     for(int i = 0; i < MAX_FICHEROS; i++){
-        if(strcmp(directorio[i].dir_nfich, nombre) == 0){
-            strcpy(directorio[i].dir_nfich, "");
+        if(directorio[i].dir_inodo == inodo){
             directorio[i].dir_inodo = NULL_INODO;
             break;
         }
     }
-
-    //Actualiza el superbloque
-    ext_superblock -> s_free_blocks_count += MAX_NUMS_BLOQUE_INODO;
-    ext_superblock -> s_free_inodes_count++;
-
-    //Guarda los cambios
-    grabarInodosyDirectorio(directorio, inodos, fich);
-    grabarByteMaps(ext_bytemaps, fich);
-    grabarSuperBloque(ext_superblock, fich);
 
     return 0;
 }

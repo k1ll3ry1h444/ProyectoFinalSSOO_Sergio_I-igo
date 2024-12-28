@@ -34,13 +34,3 @@ void leeSuperBloque(EXT_SIMPLE_SUPERBLOCK *psup, FILE *fich) {
         printf("Superbloque leído exitosamente.\n");
     }
 }
-
-void mostrar_info_superbloque(EXT_SIMPLE_SUPERBLOCK *superbloque) {
-    printf("Información del Superbloque:\n");
-    printf("Número de inodos en la partición: %u\n", superbloque->s_inodes_count);
-    printf("Número de bloques en la partición: %u\n", superbloque->s_blocks_count);
-    printf("Número de bloques libres: %u\n", superbloque->s_free_blocks_count);
-    printf("Número de inodos libres: %u\n", superbloque->s_free_inodes_count);
-    printf("Primer bloque de datos: %u\n", superbloque->s_first_data_block);
-    printf("Tamaño del bloque: %u bytes\n", superbloque->s_block_size);
-}
