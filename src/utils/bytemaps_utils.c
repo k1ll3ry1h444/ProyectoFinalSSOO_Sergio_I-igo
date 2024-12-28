@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "cabeceras.h"
+#include "../cabeceras.h"
 
 void marcar_bloque_ocupado(EXT_BYTE_MAPS *ext_bytemaps, unsigned int bloque){
     if(bloque < MAX_BLOQUES_PARTICION){

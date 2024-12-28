@@ -3,7 +3,10 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
-#include "cabeceras.h"
+#include "../bytemaps_utils.h"
+#include "../super_bloque.h"
+#include "../helpers.h"
+#include "../cabeceras.h"
 
 int borrar(EXT_ENTRADA_DIR *directorio, EXT_BLQ_INODOS *inodos, EXT_BYTE_MAPS *ext_bytemaps, EXT_SIMPLE_SUPERBLOCK *ext_superblock, char *nombre, FILE *fich){
     //Busca inodo del archivo

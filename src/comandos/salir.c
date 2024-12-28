@@ -1,9 +1,9 @@
 //Iñigo
 #include <stdio.h>
 #include <stdlib.h>
+#include "../cabeceras.h"
 
 void salir(int codigo) {
-    // Aquí puedes añadir tareas de limpieza si es necesario
     printf("\nLiberando recursos...\n");
     printf("Cerrando el programa...\n");
 

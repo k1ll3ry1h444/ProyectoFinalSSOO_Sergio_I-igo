@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
-#include "cabeceras.h"
+#include "../cabeceras.h"
 
 void Directorio(EXT_ENTRADA_DIR *directorio, EXT_BLQ_INODOS *inodos) {
     printf("Archivos en el directorio:\n");
@@ -26,7 +26,7 @@ void Directorio(EXT_ENTRADA_DIR *directorio, EXT_BLQ_INODOS *inodos) {
     }
 }
 
-int buscaFich(EXT_ENTRADA_DIR *directorio, char *nombre) {
+int buscaFich(EXT_ENTRADA_DIR *directorio, EXT_BLQ_INODOS *inodos, char *nombre){
     for (int i = 0; i < MAX_FICHEROS; i++) {
         if (strcmp(directorio[i].dir_nfich, nombre) == 0) {
             return i; // Devuelve el índice de la entrada encontrada

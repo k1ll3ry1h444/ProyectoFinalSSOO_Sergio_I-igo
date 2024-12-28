@@ -1,7 +1,8 @@
 //Iñigo
 #include <stdio.h>
 #include <stdlib.h>
-#include "super_bloque.c" // Incluye el archivo con las funciones
+#include "../super_bloque.h"
+#include "../cabeceras.h"
 
 int info(int argc, char *argv[]) {
     // Verificar si se pasó el nombre del archivo como argumento

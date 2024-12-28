@@ -3,7 +3,11 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
-#include "cabeceras.h"
+#include <stdlib.h>
+
+#include "../helpers.h"
+#include "../cabeceras.h"
+#include "../bytemaps_utils.h"
 
 int copiar(EXT_ENTRADA_DIR *directorio, EXT_BLQ_INODOS *inodos, EXT_BYTE_MAPS *ext_bytemaps, EXT_SIMPLE_SUPERBLOCK *ext_superblock, EXT_DATOS *memdatos, char *nombreorigen, char *nombredestino, FILE *fich){
     //Busca inodo del archivo origen

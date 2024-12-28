@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "cabeceras.h": "c",
+        "bytemaps_utils.h": "c"
+    }
+}
