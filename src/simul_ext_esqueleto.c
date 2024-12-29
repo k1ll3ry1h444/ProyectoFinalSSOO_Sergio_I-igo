@@ -102,118 +102,114 @@ int main() {
             } else if (strcmp(orden, "bytemaps") == 0) {
                 printBytemaps(&ext_bytemaps);
             } else if (strcmp(orden, "copy") == 0) {
-                // Mostrar los archivos disponibles
-                printf("Lista de archivos disponibles para copiar:\n");
+                // Solicitar archivo origen
+                printf("Introduce el nombre del archivo de origen: ");
+                scanf("%s", argumento1);
+                while(getchar() != '\n'); // Limpiar el buffer de entrada
+
+                // Validar archivo origen
+                int indice_origen = -1;
                 for (int i = 0; i < MAX_FICHEROS; i++) {
-                    if (directorio[i].dir_inodo != NULL_INODO) {
-                        printf("%d. %s\n", i + 1, directorio[i].dir_nfich);  // Mostrar nombre del archivo
+                    if (strcmp(directorio[i].dir_nfich, argumento1) == 0 && directorio[i].dir_inodo != NULL_INODO) {
+                        indice_origen = i;
+                        break;
                     }
                 }
-
-                // Elegir archivo origen
-                printf("Introduce el número del archivo de origen: ");
-                int origen;
-                scanf("%d", &origen);
-                while(getchar() != '\n');  // Limpiar el buffer del teclado
-
-                if (origen < 1 || origen > MAX_FICHEROS || directorio[origen - 1].dir_inodo == NULL_INODO) {
-                    printf("Archivo de origen no válido.\n");
-                    return 1;
+                if (indice_origen == -1) {
+                    printf("Archivo de origen no encontrado o inválido.\n");
+                    continue;
                 }
 
-                // Elegir archivo destino
-                printf("Introduce el número del archivo de destino: ");
-                int destino;
-                scanf("%d", &destino);
-                while(getchar() != '\n');  // Limpiar el buffer del teclado
+                // Solicitar nombre del archivo destino
+                printf("Introduce el nombre del archivo de destino: ");
+                scanf("%s", argumento2);
+                while(getchar() != '\n'); // Limpiar el buffer de entrada
 
-                if (destino < 1 || destino > MAX_FICHEROS || directorio[destino - 1].dir_nfich[0] != '\0') {
-                    printf("Archivo de destino no válido. Asegúrate de que el destino está libre.\n");
-                    return 1;
+                // Validar que el destino no exista
+                int existe_destino = 0;
+                for (int i = 0; i < MAX_FICHEROS; i++) {
+                    if (strcmp(directorio[i].dir_nfich, argumento2) == 0) {
+                        existe_destino = 1;
+                        break;
+                    }
+                }
+                if (existe_destino) {
+                    printf("El archivo de destino ya existe. Introduzca un nombre diferente.\n");
+                    continue;
                 }
 
                 // Copiar archivo
-                strcpy(argumento1, directorio[origen - 1].dir_nfich);
-                strcpy(argumento2, directorio[destino - 1].dir_nfich);
                 copiar(&directorio[0], &ext_blq_inodos, &ext_bytemaps, &ext_superblock, &memdatos[0], argumento1, argumento2, fent);
-
             } else if (strcmp(orden, "info") == 0) {
                 info(&ext_superblock);
             } else if (strcmp(orden, "rename") == 0) {
-                // Mostrar los archivos disponibles
-                printf("Lista de archivos disponibles para renombrar:\n");
+                // Solicitar archivo a renombrar
+                printf("Introduce el nombre del archivo a renombrar: ");
+                scanf("%s", argumento1);
+                while(getchar() != '\n'); // Limpiar el buffer de entrada
+
+                // Validar archivo
+                int indice_renombrar = -1;
                 for (int i = 0; i < MAX_FICHEROS; i++) {
-                    if (directorio[i].dir_inodo != NULL_INODO) {
-                        printf("%d. %s\n", i + 1, directorio[i].dir_nfich);  // Mostrar nombre del archivo
+                    if (strcmp(directorio[i].dir_nfich, argumento1) == 0 && directorio[i].dir_inodo != NULL_INODO) {
+                        indice_renombrar = i;
+                        break;
                     }
                 }
-
-                // Elegir archivo a renombrar
-                printf("Introduce el número del archivo a renombrar: ");
-                int archivo_renombrar;
-                scanf("%d", &archivo_renombrar);
-                while(getchar() != '\n');  // Limpiar el buffer del teclado
-
-                if (archivo_renombrar < 1 || archivo_renombrar > MAX_FICHEROS || directorio[archivo_renombrar - 1].dir_inodo == NULL_INODO) {
-                    printf("Archivo no válido.\n");
-                    return 1;
+                if (indice_renombrar == -1) {
+                    printf("Archivo no encontrado o inválido.\n");
+                    continue;
                 }
 
-                // Introducir nuevo nombre
+                // Solicitar nuevo nombre
                 printf("Introduce el nuevo nombre del archivo: ");
                 scanf("%s", argumento2);
+                while(getchar() != '\n'); // Limpiar el buffer de entrada
 
                 // Renombrar archivo
-                strcpy(argumento1, directorio[archivo_renombrar - 1].dir_nfich);
                 renombrar(&directorio[0], &ext_blq_inodos, argumento1, argumento2);
-
             } else if (strcmp(orden, "remove") == 0) {
-                // Mostrar los archivos disponibles
-                printf("Lista de archivos disponibles para eliminar:\n");
+                // Solicitar archivo a eliminar
+                printf("Introduce el nombre del archivo a eliminar: ");
+                scanf("%s", argumento1);
+                while(getchar() != '\n'); // Limpiar el buffer de entrada
+
+                // Validar archivo
+                int indice_eliminar = -1;
                 for (int i = 0; i < MAX_FICHEROS; i++) {
-                    if (directorio[i].dir_inodo != NULL_INODO) {
-                        printf("%d. %s\n", i + 1, directorio[i].dir_nfich);  // Mostrar nombre del archivo
+                    if (strcmp(directorio[i].dir_nfich, argumento1) == 0 && directorio[i].dir_inodo != NULL_INODO) {
+                        indice_eliminar = i;
+                        break;
                     }
                 }
-
-                // Elegir archivo a eliminar
-                printf("Introduce el número del archivo a eliminar: ");
-                int archivo_eliminar;
-                scanf("%d", &archivo_eliminar);
-                while(getchar() != '\n');  // Limpiar el buffer del teclado
-
-                if (archivo_eliminar < 1 || archivo_eliminar > MAX_FICHEROS || directorio[archivo_eliminar - 1].dir_inodo == NULL_INODO) {
-                    printf("Archivo no válido.\n");
-                    return 1;
+                if (indice_eliminar == -1) {
+                    printf("Archivo no encontrado o inválido.\n");
+                    continue;
                 }
 
                 // Eliminar archivo
-                strcpy(argumento1, directorio[archivo_eliminar - 1].dir_nfich);
                 borrar(&directorio[0], &ext_blq_inodos, &ext_bytemaps, &ext_superblock, argumento1, fent);
             } else if (strcmp(orden, "imprimir") == 0) {
-                // Mostrar los archivos disponibles
-                printf("Lista de archivos disponibles para imprimir:\n");
+                // Solicitar archivo a imprimir
+                printf("Introduce el nombre del archivo a imprimir: ");
+                scanf("%s", argumento1);
+                while(getchar() != '\n'); // Limpiar el buffer de entrada
+
+                // Validar archivo
+                int indice_imprimir = -1;
                 for (int i = 0; i < MAX_FICHEROS; i++) {
-                    if (directorio[i].dir_inodo != NULL_INODO) {
-                        printf("%d. %s\n", i + 1, directorio[i].dir_nfich);  // Mostrar nombre del archivo
+                    if (strcmp(directorio[i].dir_nfich, argumento1) == 0 && directorio[i].dir_inodo != NULL_INODO) {
+                        indice_imprimir = i;
+                        break;
                     }
                 }
-
-                // Elegir archivo a imprimir
-                printf("Introduce el número del archivo a imprimir: ");
-                int archivo_imprimir;
-                scanf("%d", &archivo_imprimir);
-                while(getchar() != '\n');  // Limpiar el buffer del teclado
-
-                if (archivo_imprimir < 1 || archivo_imprimir > MAX_FICHEROS || directorio[archivo_imprimir - 1].dir_inodo == NULL_INODO) {
-                    printf("Archivo no válido.\n");
-                    return 1;
+                if (indice_imprimir == -1) {
+                    printf("Archivo no encontrado o inválido.\n");
+                    continue;
                 }
 
                 // Imprimir archivo
-                strcpy(argumento1, directorio[archivo_imprimir - 1].dir_nfich);
                 imprimir(&directorio[0], &ext_blq_inodos, &memdatos[0], argumento1);
-
             } else if (strcmp(orden, "salir") == 0) {
                 printf("Saliendo...\n");
                 grabarDatos(&memdatos[0], fent);

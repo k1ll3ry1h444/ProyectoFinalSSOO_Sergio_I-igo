@@ -9,7 +9,6 @@ void Directorio(EXT_ENTRADA_DIR *directorio, EXT_BLQ_INODOS *inodos) {
     printf("%-20s %-10s %-10s %-15s\n", "Nombre", "Inodo", "Tamaño", "Bloques Ocupados");
     printf("---------------------------------------------------------------\n");
 
-    // Variable para controlar si ya no hay ficheros en el directorio
     int archivos_encontrados = 0;
 
     for (int i = 0; i < MAX_FICHEROS; i++) {
@@ -17,27 +16,28 @@ void Directorio(EXT_ENTRADA_DIR *directorio, EXT_BLQ_INODOS *inodos) {
             archivos_encontrados = 1; // Encontramos al menos un archivo
             EXT_SIMPLE_INODE *inodo = &inodos->blq_inodos[directorio[i].dir_inodo];
 
-            // Verificamos que el inodo sea válido antes de acceder
-            if (inodo == NULL) {
-                printf("Inodo no válido para el archivo: %s\n", directorio[i].dir_nfich);
-                continue; // Continuamos con el siguiente archivo
+            // Verificar si el inodo asociado es válido
+            if (directorio[i].dir_inodo < 0 || directorio[i].dir_inodo >= MAX_FICHEROS) {
+                continue; // Saltamos al siguiente archivo
             }
 
-            printf("%-20s %-10d %-10d ", directorio[i].dir_nfich, directorio[i].dir_inodo, inodo->size_fichero);
+            // Información básica
+            printf("%-20s %-10d %-10d ", 
+                   directorio[i].dir_nfich, 
+                   directorio[i].dir_inodo, 
+                   inodo->size_fichero);
 
             // Variable para contar los bloques ocupados
             int bloques_ocupados = 0;
 
-            // Imprimir bloques ocupados de manera segura
+            // Iterar sobre los bloques del inodo
             for (int j = 0; j < MAX_NUMS_BLOQUE_INODO; j++) {
                 if (inodo->i_nbloque[j] != NULL_BLOQUE) {
                     printf("%d ", inodo->i_nbloque[j]);
-                    bloques_ocupados++; // Incrementamos el contador de bloques ocupados
+                    bloques_ocupados++;
+                } else {
+                    break; // Detener si se encuentra un bloque vacío
                 }
-            }
-
-            if (bloques_ocupados == 0) {
-                printf("Sin bloques ocupados");
             }
 
             printf("\n");
@@ -49,7 +49,6 @@ void Directorio(EXT_ENTRADA_DIR *directorio, EXT_BLQ_INODOS *inodos) {
         printf("No hay archivos en el directorio.\n");
     }
 }
-
 
 // Función para buscar un archivo en el directorio
 int buscaFich(EXT_ENTRADA_DIR *directorio, EXT_BLQ_INODOS *inodos, char *nombre) {

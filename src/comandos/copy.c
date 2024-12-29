@@ -1,4 +1,4 @@
-//Sergio
+// Sergio
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
@@ -23,35 +23,29 @@ void copiar(EXT_ENTRADA_DIR *directorio, EXT_BLQ_INODOS *inodos, EXT_BYTE_MAPS *
         return;
     }
 
-    // Verificar si el destino es válido antes de realizar la copia
+    // Verificar si el destino ya existe
+    for (int i = 0; i < MAX_FICHEROS; i++) {
+        if (strcmp(directorio[i].dir_nfich, nombredestino) == 0) {
+            fprintf(stderr, "error: el archivo destino ya existe\n");
+            return;
+        }
+    }
+
+    // Busca un espacio libre en el directorio
     int inodoDestino = -1;
     for (int i = 0; i < MAX_FICHEROS; i++) {
-        if (directorio[i].dir_inodo == NULL_INODO) { // Encontramos un espacio libre
-            inodoDestino = i; // Asignamos el índice del espacio libre al destino
+        if (directorio[i].dir_inodo == NULL_INODO) {
+            inodoDestino = i;
             break;
         }
     }
 
     if (inodoDestino == -1) {
-        fprintf(stderr, "error: no hay espacio disponible para el archivo de destino\n");
+        fprintf(stderr, "error: no hay espacio disponible en el directorio\n");
         return;
     }
 
-    // Verifica que el número de archivo de destino es válido, es decir, mayor o igual que el primero no vacío
-    int destino_valido = 0;
-    for (int i = 0; i < MAX_FICHEROS; i++) {
-        if (directorio[i].dir_inodo == inodoDestino && directorio[i].dir_nfich[0] == '\0') {
-            destino_valido = 1;  // Si hay espacio vacío, el destino es válido
-            break;
-        }
-    }
-
-    if (!destino_valido) {
-        fprintf(stderr, "error: archivo de destino no válido\n");
-        return;
-    }
-
-    // Encuentra el inodo de destino libre
+    // Encuentra un inodo libre
     int inodoDestinoLibre = buscar_inodo_libre(ext_bytemaps);
     if (inodoDestinoLibre == -1) {
         fprintf(stderr, "error: no hay inodos libres\n");
@@ -82,4 +76,3 @@ void copiar(EXT_ENTRADA_DIR *directorio, EXT_BLQ_INODOS *inodos, EXT_BYTE_MAPS *
 
     printf("Copia realizada con éxito: %s a %s\n", nombreorigen, nombredestino);
 }
-
