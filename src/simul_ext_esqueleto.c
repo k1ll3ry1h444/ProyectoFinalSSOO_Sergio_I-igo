@@ -114,6 +114,7 @@ int main() {
                 printf("Introduce el número del archivo de origen: ");
                 int origen;
                 scanf("%d", &origen);
+                while(getchar() != '\n');  // Limpiar el buffer del teclado
 
                 if (origen < 1 || origen > MAX_FICHEROS || directorio[origen - 1].dir_inodo == NULL_INODO) {
                     printf("Archivo de origen no válido.\n");
@@ -124,9 +125,10 @@ int main() {
                 printf("Introduce el número del archivo de destino: ");
                 int destino;
                 scanf("%d", &destino);
+                while(getchar() != '\n');  // Limpiar el buffer del teclado
 
-                if (destino < 1 || destino > MAX_FICHEROS || directorio[destino - 1].dir_inodo != NULL_INODO) {
-                    printf("Archivo de destino no válido.\n");
+                if (destino < 1 || destino > MAX_FICHEROS || directorio[destino - 1].dir_nfich[0] != '\0') {
+                    printf("Archivo de destino no válido. Asegúrate de que el destino está libre.\n");
                     return 1;
                 }
 
@@ -150,6 +152,7 @@ int main() {
                 printf("Introduce el número del archivo a renombrar: ");
                 int archivo_renombrar;
                 scanf("%d", &archivo_renombrar);
+                while(getchar() != '\n');  // Limpiar el buffer del teclado
 
                 if (archivo_renombrar < 1 || archivo_renombrar > MAX_FICHEROS || directorio[archivo_renombrar - 1].dir_inodo == NULL_INODO) {
                     printf("Archivo no válido.\n");
@@ -177,6 +180,7 @@ int main() {
                 printf("Introduce el número del archivo a eliminar: ");
                 int archivo_eliminar;
                 scanf("%d", &archivo_eliminar);
+                while(getchar() != '\n');  // Limpiar el buffer del teclado
 
                 if (archivo_eliminar < 1 || archivo_eliminar > MAX_FICHEROS || directorio[archivo_eliminar - 1].dir_inodo == NULL_INODO) {
                     printf("Archivo no válido.\n");
@@ -199,6 +203,7 @@ int main() {
                 printf("Introduce el número del archivo a imprimir: ");
                 int archivo_imprimir;
                 scanf("%d", &archivo_imprimir);
+                while(getchar() != '\n');  // Limpiar el buffer del teclado
 
                 if (archivo_imprimir < 1 || archivo_imprimir > MAX_FICHEROS || directorio[archivo_imprimir - 1].dir_inodo == NULL_INODO) {
                     printf("Archivo no válido.\n");
@@ -208,6 +213,7 @@ int main() {
                 // Imprimir archivo
                 strcpy(argumento1, directorio[archivo_imprimir - 1].dir_nfich);
                 imprimir(&directorio[0], &ext_blq_inodos, &memdatos[0], argumento1);
+
             } else if (strcmp(orden, "salir") == 0) {
                 printf("Saliendo...\n");
                 grabarDatos(&memdatos[0], fent);

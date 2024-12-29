@@ -12,6 +12,7 @@
 #define LEN_NFICH 17
 #define NULL_INODO 0xFFFF
 #define NULL_BLOQUE 0xFFFF
+#define SIZE_TOTAL_ARCHIVO 1048576
 
 /* Estructura del superbloque */
 typedef struct {
